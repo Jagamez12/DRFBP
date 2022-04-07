@@ -16,7 +16,11 @@ class UserAccountManager(BaseUserManager):
         user.save()
 
         return user
-
+    def create_superuser(self, email,name, phone, password):
+        user = self.create_user(email,name, phone, password)
+        user.is_superuser = True
+        user.is_staff = True
+        user.save()
     
 
 

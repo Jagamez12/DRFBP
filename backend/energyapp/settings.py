@@ -37,9 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+
     'accounts',
     'rest_framework',
     'djoser',
+    'codes_verification',
 ]
 
 MIDDLEWARE = [
@@ -136,7 +139,7 @@ EMAIL_HOST_PASSWORD = 'q1w2e3r4t1010'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny', # Cambiar a IsAuthenticated !
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',

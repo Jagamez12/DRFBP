@@ -2,8 +2,8 @@ from rest_framework import serializers
 
 from .models import Code
 
-class CodeSerializer(serializers.Serializer):
+class CodeSerializer(serializers.ModelSerializer):
     """ Serializador de los Code """
     class Meta:
         model = Code
-        fields = ['email']
+        fields = '__all__'

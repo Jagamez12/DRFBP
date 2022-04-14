@@ -26,8 +26,8 @@ def send_email(code, email):
 @api_view(['POST'])
 def generate_code(request):
 
-    email = request.data.email
-    password = request.data.password
+    email = request.data['email']
+    password = request.data['password']
     user = authenticate(request, email = email, password = password)
     print(request.data)
     print(email)
@@ -35,8 +35,9 @@ def generate_code(request):
     print(user)
     if user is not None:
         code = create_code()
-        data = { 'code': code, 'user':user}
+        data = { 'number': code, 'user':email}
         serializer = CodeSerializer(data=data)
+        print(serializer)
         if serializer.is_valid():
             send_email(code, email)
             serializer.save()
@@ -46,4 +47,15 @@ def generate_code(request):
         else:
             return Response({'errors':serializer.errors, 'status':'0'})
     else:
-        raise ValueError('Invalid Credentials')
+        return Response({'error': "Invalid Credentials", 'status':'400'})
+
+@api_view(['POST'])
+def consulte_code(request):
+    code_check = Code.objects.filter(number=request.data['code']).exists()
+
+    if code_check:
+        return Response({'message': 'code exist', 'status': 1})
+    else:
+        return Response({'message': 'code not exist', 'status': 0})
+
+

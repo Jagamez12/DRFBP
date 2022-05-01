@@ -29,15 +29,11 @@ def generate_code(request):
     email = request.data['email']
     password = request.data['password']
     user = authenticate(request, email = email, password = password)
-    print(request.data)
-    print(email)
-    print(password)
-    print(user)
+    
     if user is not None:
         code = create_code()
         data = { 'number': code, 'user':email}
         serializer = CodeSerializer(data=data)
-        print(serializer)
         if serializer.is_valid():
             send_email(code, email)
             serializer.save()
@@ -54,7 +50,16 @@ def consulte_code(request):
     code_check = Code.objects.filter(number=request.data['code']).exists()
 
     if code_check:
-        return Response({'message': 'code exist', 'status': 1})
+        code_verify = Code.objects.filter(number=request.data['code']).get()
+        if code_verify.user == request.data['email']:
+            if code_verify.is_active == True:
+                code_verify.is_active = False
+                code_verify.save()
+                return Response({'message': 'code exist', 'status': 1})
+            else:
+                return Response({'message': 'the code has been used', 'status': 0})    
+        else:
+            return Response({'message': 'You cannot use this code.', 'status':'0'})
     else:
         return Response({'message': 'code not exist', 'status': 0})
 
